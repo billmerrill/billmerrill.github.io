@@ -6,22 +6,23 @@
   <title>Flappy Triangle</title>
   <style>
     body {
-      background-color: #efefef; 
+      background-color: #cdcdcd; 
     }
     canvas {
       /* border: 1px solid black; */
-      border: 1px dashed #cccccc;
+      border: 1px dashed #999999;
       display: block;
       margin: 0 auto;
+      background-color: white;
     }
     img {
-      border: 1px dashed #cccccc;
+      border: 1px dashed #999999;
+      background-color: white;
 
     }
 
     #found {
       width: 100%;
-      border: 2px dotted rgb(96 139 168);
       display: flex;
       flex-wrap: wrap;
     }
@@ -31,7 +32,7 @@
 <body>
   <h1>Flappy Triangles</h1>
   <canvas id="myCanvas" width="400" height="300"></canvas>
-  <h2>Found</h2>
+  <h2>I'm Searching...</h2>
   <div id="found"></div>
   <script>
     const canvas = document.getElementById('myCanvas');
@@ -75,7 +76,6 @@
       }
 
       isTriangle() {
-        return true;
         const threshold = .01;
         const xTest = Math.abs(this.edges[1][1][0] - this.edges[2][1][0]);
         const yTest = Math.abs(this.edges[1][1][1] - this.edges[2][1][1]);
@@ -92,7 +92,7 @@
 
           let cap = document.createElement("FIGCAPTION");
           let ts = new Date().toUTCString()
-          cap.textContent = `${ts}: (${this.edges[1][1][0].toPrecision(2)}, ${this.edges[1][1][1].toPrecision(2)})`;
+          cap.textContent = `${ts}: (${this.edges[1][1][0].toPrecision(4)}, ${this.edges[1][1][1].toPrecision(4)})`;
           fig.appendChild(cap);
           
           foundElem.appendChild(fig);
@@ -163,6 +163,9 @@
 
     // Start the animation
     tick();
+
+    canvas.onclick = function() {ft.save();}
+
   </script>
 </body>
 </html>
