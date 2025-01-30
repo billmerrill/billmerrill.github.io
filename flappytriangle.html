@@ -5,24 +5,43 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Flappy Triangle</title>
   <style>
+    body {
+      background-color: #efefef; 
+    }
     canvas {
       /* border: 1px solid black; */
-      border: none;
+      border: 1px dashed #cccccc;
       display: block;
       margin: 0 auto;
     }
+    img {
+      border: 1px dashed #cccccc;
+
+    }
+
+    #found {
+      width: 100%;
+      border: 2px dotted rgb(96 139 168);
+      display: flex;
+      flex-wrap: wrap;
+    }
+
   </style>
 </head>
 <body>
-  <canvas id="myCanvas" width="800" height="600"></canvas>
+  <h1>Flappy Triangles</h1>
+  <canvas id="myCanvas" width="400" height="300"></canvas>
+  <h2>Found</h2>
+  <div id="found"></div>
   <script>
     const canvas = document.getElementById('myCanvas');
     const ctx = canvas.getContext('2d');
+    const foundElem = document.getElementById('found');
 
     // Canvas dimensions and scaling
     const canvasWidth = canvas.width;
     const canvasHeight = canvas.height;
-    const scale = 100; // Scale factor for drawing
+    const scale = 70; // Scale factor for drawing
 
     // Initial edges of the triangle
     let edges = [
@@ -56,15 +75,32 @@
       }
 
       isTriangle() {
-        const threshold = 0.01;
+        return true;
+        const threshold = .01;
         const xTest = Math.abs(this.edges[1][1][0] - this.edges[2][1][0]);
         const yTest = Math.abs(this.edges[1][1][1] - this.edges[2][1][1]);
         return xTest < threshold && yTest < threshold;
       }
 
+      save() {
+          let fig = document.createElement("FIGURE");
+
+          let triangle_img = new Image();
+          triangle_img.src = canvas.toDataURL();
+          triangle_img.alt = `(${this.edges[1][1][0]}, ${this.edges[1][1][1]})`;
+          fig.appendChild(triangle_img);
+
+          let cap = document.createElement("FIGCAPTION");
+          let ts = new Date().toUTCString()
+          cap.textContent = `${ts}: (${this.edges[1][1][0].toPrecision(2)}, ${this.edges[1][1][1].toPrecision(2)})`;
+          fig.appendChild(cap);
+          
+          foundElem.appendChild(fig);
+      }
+
       tick() {
         if (this.isTriangle()) {
-          paused = true;
+          this.save();
         }
 
         if (!paused) {
@@ -99,8 +135,8 @@
       for (const [index, edge] of ft.edges.entries()) {
         ctx.strokeStyle = colors[index];
         ctx.beginPath();
-        ctx.moveTo(edge[0][0] * scale + canvasWidth / 2, -edge[0][1] * scale + canvasHeight / 2);
-        ctx.lineTo(edge[1][0] * scale + canvasWidth / 2, -edge[1][1] * scale + canvasHeight / 2);
+        ctx.moveTo(edge[0][0] * scale + canvasWidth / 2, (-edge[0][1]+1) * scale + canvasHeight / 2);
+        ctx.lineTo(edge[1][0] * scale + canvasWidth / 2, (-edge[1][1]+1) * scale + canvasHeight / 2);
         ctx.stroke();
       }
     }
