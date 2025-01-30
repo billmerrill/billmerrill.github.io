@@ -43,6 +43,7 @@
     const canvasWidth = canvas.width;
     const canvasHeight = canvas.height;
     const scale = 70; // Scale factor for drawing
+    var cheat = true;
 
     // Initial edges of the triangle
     let edges = [
@@ -146,17 +147,22 @@
     let velocityTicks = 0
 
     function tick(timestamp) {
-    //   if (Math.floor(Date.now() / 1000) % 2 === 0) {
-      if ((timestamp - prev) > 50) {
-        prev = timestamp;
-        if (velocityTicks > 50) {
-            ft.updateVelocities();
-            velocityTicks = 0
-        } else {
-            velocityTicks += 1;
-        }
-        ft.tick();
+      if (cheat) {
+        ft.edges[1][1] = ft.edges[2][1];
         draw();
+        cheat = false;
+      } else {
+        if ((timestamp - prev) > 50) {
+          prev = timestamp;
+          if (velocityTicks > 50) {
+              ft.updateVelocities();
+              velocityTicks = 0
+          } else {
+              velocityTicks += 1;
+          }
+          ft.tick();
+          draw();
+        }
       }
       requestAnimationFrame(tick);
     }
