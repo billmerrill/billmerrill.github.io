@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flappy Triangle</title>
+  <style>
+    canvas {
+      /* border: 1px solid black; */
+      border: none;
+      display: block;
+      margin: 0 auto;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="myCanvas" width="800" height="600"></canvas>
+  <script>
+    const canvas = document.getElementById('myCanvas');
+    const ctx = canvas.getContext('2d');
+
+    // Canvas dimensions and scaling
+    const canvasWidth = canvas.width;
+    const canvasHeight = canvas.height;
+    const scale = 100; // Scale factor for drawing
+
+    // Initial edges of the triangle
+    let edges = [
+      [[-0.5, 1.0], [0.5, 1.0]],
+      [[-0.5, 1.0], [0.0, 0.0]],
+      [[0.5, 1.0], [0.0, 0.0]]
+    ];
+
+    let paused = false;
+
+    class FlappyTriangle {
+      constructor(edges) {
+        this.edges = edges;
+        this.angles = [45.0, 90.0];
+        this.lengths = [1.0, 1.0];
+        this.angularVelocity = [3, 6];
+        this.linearVelocity = [0.01, -0.01];
+        this.compute();
+      }
+
+      computeArm(base, angle, length) {
+        const angleRadians = (angle * Math.PI) / 180;
+        const xComp = length * Math.cos(angleRadians);
+        const yComp = length * Math.sin(angleRadians);
+        return [base[0] + xComp, base[1] + yComp];
+      }
+
+      compute() {
+        this.edges[1][1] = this.computeArm(this.edges[1][0], this.angles[0], this.lengths[0]);
+        this.edges[2][1] = this.computeArm(this.edges[2][0], this.angles[1], this.lengths[1]);
+      }
+
+      isTriangle() {
+        const threshold = 0.01;
+        const xTest = Math.abs(this.edges[1][1][0] - this.edges[2][1][0]);
+        const yTest = Math.abs(this.edges[1][1][1] - this.edges[2][1][1]);
+        return xTest < threshold && yTest < threshold;
+      }
+
+      tick() {
+        if (this.isTriangle()) {
+          paused = true;
+        }
+
+        if (!paused) {
+          this.lengths[0] += this.linearVelocity[0];
+          this.lengths[1] += this.linearVelocity[1];
+          this.angles[0] = (this.angles[0] + this.angularVelocity[0]) % 360;
+          this.angles[1] = (this.angles[1] + this.angularVelocity[1]) % 360;
+          this.compute();
+        }
+      }
+
+      updateVelocities() {
+        this.linearVelocity[0] = (Math.random() * 2 - 1) / 60.0;
+        this.linearVelocity[1] = (Math.random() * 2 - 1) / 60.0;
+        // this.angularVelocity[0] = Math.random() * 20 - 10;
+        this.angularVelocity[0] = (Math.random()-0.5) * 20;
+        // this.angularVelocity[1] = Math.random() * 20 - 10;
+        this.angularVelocity[1] = (Math.random()-0.5) * 20 ;
+        Math.random() - .5 * 10
+      }
+    }
+
+    const ft = new FlappyTriangle(edges);
+    const colors = ["blue", "gold", "green"];
+
+    function draw() {
+      // Clear the canvas
+      ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+
+      // Draw the edges of the triangle
+      ctx.lineWidth = 2;
+      for (const [index, edge] of ft.edges.entries()) {
+        ctx.strokeStyle = colors[index];
+        ctx.beginPath();
+        ctx.moveTo(edge[0][0] * scale + canvasWidth / 2, -edge[0][1] * scale + canvasHeight / 2);
+        ctx.lineTo(edge[1][0] * scale + canvasWidth / 2, -edge[1][1] * scale + canvasHeight / 2);
+        ctx.stroke();
+      }
+    }
+
+    let start;
+    let prev = 0;
+    let counts = 0
+
+    function tick(timestamp) {
+    //   if (Math.floor(Date.now() / 1000) % 2 === 0) {
+      if ((timestamp - prev) > 50) {
+        prev = timestamp;
+        if (counts > 10) {
+            ft.updateVelocities();
+            counts = 0
+        } else {
+            counts += 1;
+        }
+        ft.tick();
+        draw();
+      }
+      requestAnimationFrame(tick);
+    }
+
+    // Start the animation
+    tick();
+  </script>
+</body>
+</html>
