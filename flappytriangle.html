@@ -107,17 +107,17 @@
 
     let start;
     let prev = 0;
-    let counts = 0
+    let velocityTicks = 0
 
     function tick(timestamp) {
     //   if (Math.floor(Date.now() / 1000) % 2 === 0) {
       if ((timestamp - prev) > 50) {
         prev = timestamp;
-        if (counts > 10) {
+        if (velocityTicks > 50) {
             ft.updateVelocities();
-            counts = 0
+            velocityTicks = 0
         } else {
-            counts += 1;
+            velocityTicks += 1;
         }
         ft.tick();
         draw();
