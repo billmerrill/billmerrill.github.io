@@ -57,12 +57,16 @@
 </head>
 <body>
     <header>
-        <h1>Changes that Asteroid Y4R will impact Earth</h1>
+        <h1>Chances that Asteroid Y4R will impact Earth</h1>
     </header>
     
     <main>
-        <p>This page is recording published descriptions of the change that Y4R will impact the Earth over time.</p>
-        
+        <p>This page is recording published descriptions of the chance that Y4R will impact the Earth over time.</p>
+
+        <div class="chart-container">
+            <canvas id="probability-chart" aria-label="Line chart showing impact probability over time" role="img"></canvas>
+        </div>
+
         <table id="impact-table" aria-labelledby="table-caption">
             <caption id="table-caption">Impact Probability History</caption>
             <thead>
@@ -74,26 +78,24 @@
             </thead>
             <tbody>
                 <tr>
-                    <td>2025-01-15</td>
-                    <td>0.007</td>
-                    <td>Initial observations from Mauna Kea Observatory</td>
+                    <td>2025-02-18</td>
+                    <td>2.6</td>
+                    <td><a href="https://cneos.jpl.nasa.gov/sentry/details.html#?des=2024%20YR4">Sentry: Earth Impact Monitoring</a></td>
                 </tr>
                 <tr>
-                    <td>2025-01-20</td>
-                    <td>0.015</td>
-                    <td>Additional radar data from Arecibo II confirmed trajectory concerns</td>
+                    <td>2025-02-19</td>
+                    <td>3.1</td>
+                    <td></td>
                 </tr>
                 <tr>
-                    <td>2025-01-28</td>
-                    <td>0.004</td>
-                    <td>ESA measurements suggest lower probability after keyhole passage analysis</td>
+                    <td>2025-02-20</td>
+                    <td>1.5</td>
+                    <td><a href="https://blogs.nasa.gov/planetarydefense/2025/02/20/additional-observations-continue-to-reduce-chance-of-asteroid-impact-in-2032/">Additional observations reduce chance</a></td>
                 </tr>
             </tbody>
         </table>
         
-        <div class="chart-container">
-            <canvas id="probability-chart" aria-label="Line chart showing impact probability over time" role="img"></canvas>
-        </div>
+
         
         <!-- Summary for screen readers -->
         <div id="chart-summary" class="sr-only" aria-live="polite">
