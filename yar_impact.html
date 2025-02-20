@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asteroid Y4R Impact Probability Tracker</title>
+    <!-- Add the adapter for date-fns which is needed for time scale -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-adapter-moment/1.0.1/chartjs-adapter-moment.min.js"></script>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            color: #333;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 2rem 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        caption {
+            font-weight: bold;
+            font-size: 1.2em;
+            margin-bottom: 0.5rem;
+            text-align: left;
+        }
+        .chart-container {
+            position: relative;
+            height: 400px;
+            margin-top: 2rem;
+        }
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Changes that Asteroid Y4R will impact Earth</h1>
+    </header>
+    
+    <main>
+        <p>This page is recording published descriptions of the change that Y4R will impact the Earth over time.</p>
+        
+        <table id="impact-table" aria-labelledby="table-caption">
+            <caption id="table-caption">Impact Probability History</caption>
+            <thead>
+                <tr>
+                    <th scope="col">Date</th>
+                    <th scope="col">Probability (%)</th>
+                    <th scope="col">Notes</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>2025-01-15</td>
+                    <td>0.007</td>
+                    <td>Initial observations from Mauna Kea Observatory</td>
+                </tr>
+                <tr>
+                    <td>2025-01-20</td>
+                    <td>0.015</td>
+                    <td>Additional radar data from Arecibo II confirmed trajectory concerns</td>
+                </tr>
+                <tr>
+                    <td>2025-01-28</td>
+                    <td>0.004</td>
+                    <td>ESA measurements suggest lower probability after keyhole passage analysis</td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <div class="chart-container">
+            <canvas id="probability-chart" aria-label="Line chart showing impact probability over time" role="img"></canvas>
+        </div>
+        
+        <!-- Summary for screen readers -->
+        <div id="chart-summary" class="sr-only" aria-live="polite">
+            Chart shows impact probability trending from 0.007% on January 15, 2025 to 0.004% on January 28, 2025, with a peak of 0.015% on January 20, 2025.
+        </div>
+    </main>
+
+    <script>
+        /**
+         * Initializes the application when the DOM is fully loaded
+         */
+        document.addEventListener('DOMContentLoaded', function() {
+            try {
+                // Parse the table data
+                const tableData = parseTableData();
+                
+                // Render the chart with the parsed data
+                renderChart(tableData);
+                
+                console.log("Chart initialization complete");
+            } catch (error) {
+                console.error("Error initializing chart:", error);
+            }
+        });
+
+        /**
+         * Parses data from the HTML table
+         * @returns {Object} Object containing dates, probabilities and notes arrays
+         */
+        function parseTableData() {
+            const table = document.getElementById('impact-table');
+            const rows = table.querySelectorAll('tbody tr');
+            
+            const dates = [];
+            const probabilities = [];
+            const notes = [];
+            
+            rows.forEach(row => {
+                const cells = row.querySelectorAll('td');
+                const date = cells[0].textContent;
+                const probability = parseFloat(cells[1].textContent);
+                const note = cells[2].textContent;
+                
+                dates.push(date);
+                probabilities.push(probability);
+                notes.push(note);
+            });
+            
+            console.log("Parsed data:", { dates, probabilities, notes });
+            return { dates, probabilities, notes };
+        }
+
+        /**
+         * Calculates the date range for the x-axis with 1 day buffer
+         * @param {Array} dates Array of date strings
+         * @returns {Object} Object with min and max dates as moment objects
+         */
+        function calculateDateRange(dates) {
+            // Convert all dates to moment objects for comparison
+            const momentDates = dates.map(date => moment(date));
+            
+            // Find min and max dates
+            let minDate = moment.min(momentDates);
+            let maxDate = moment.max(momentDates);
+            
+            // Add 1 day buffer before and after
+            minDate = minDate.clone().subtract(1, 'days');
+            maxDate = maxDate.clone().add(1, 'days');
+            
+            console.log("Date range:", { 
+                min: minDate.format('YYYY-MM-DD'), 
+                max: maxDate.format('YYYY-MM-DD') 
+            });
+            
+            return { min: minDate, max: maxDate };
+        }
+
+        /**
+         * Calculates the probability range for the y-axis with 20% buffer
+         * @param {Array} probabilities Array of probability values
+         * @returns {Object} Object with min and max probabilities
+         */
+        function calculateProbabilityRange(probabilities) {
+            const min = Math.min(...probabilities);
+            const max = Math.max(...probabilities);
+            const range = max - min;
+            
+            // Add 20% buffer below and above
+            const result = {
+                min: Math.max(0, min - (range * 0.2)),
+                max: max + (range * 0.2)
+            };
+            
+            console.log("Probability range:", result);
+            return result;
+        }
+
+        /**
+         * Renders the Chart.js visualization
+         * @param {Object} data Object containing dates, probabilities and notes arrays
+         */
+        function renderChart(data) {
+            const ctx = document.getElementById('probability-chart').getContext('2d');
+            
+            const dateRange = calculateDateRange(data.dates);
+            const probRange = calculateProbabilityRange(data.probabilities);
+            
+            // Create dataset with properly formatted dates
+            const chartData = data.dates.map((date, index) => ({
+                x: date,
+                y: data.probabilities[index],
+                note: data.notes[index]
+            }));
+            
+            console.log("Chart data:", chartData);
+            
+            // Create the chart
+            const chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    datasets: [{
+                        label: 'Impact Probability (%)',
+                        data: chartData,
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 2,
+                        pointBackgroundColor: 'rgba(75, 192, 192, 1)',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: 'rgba(75, 192, 192, 1)',
+                        pointRadius: 5,
+                        pointHoverRadius: 7
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    parsing: {
+                        xAxisKey: 'x',
+                        yAxisKey: 'y'
+                    },
+                    scales: {
+                        x: {
+                            type: 'time',
+                            time: {
+                                unit: 'day',
+                                displayFormats: {
+                                    day: 'MMM D, YYYY'
+                                }
+                            },
+                            title: {
+                                display: true,
+                                text: 'Date'
+                            },
+                            min: dateRange.min.toISOString(),
+                            max: dateRange.max.toISOString()
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Probability (%)'
+                            },
+                            min: probRange.min,
+                            max: probRange.max
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                afterLabel: function(context) {
+                                    return `Note: ${context.raw.note}`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Update the screen reader summary when chart renders
+            updateChartSummary(data);
+        }
+        
+        /**
+         * Updates the screen reader summary with chart information
+         * @param {Object} data Object containing dates, probabilities and notes arrays
+         */
+        function updateChartSummary(data) {
+            const summaryElement = document.getElementById('chart-summary');
+            const minProb = Math.min(...data.probabilities);
+            const maxProb = Math.max(...data.probabilities);
+            const minIndex = data.probabilities.indexOf(minProb);
+            const maxIndex = data.probabilities.indexOf(maxProb);
+            
+            const formattedMinDate = moment(data.dates[minIndex]).format('MMMM D, YYYY');
+            const formattedMaxDate = moment(data.dates[maxIndex]).format('MMMM D, YYYY');
+            
+            summaryElement.textContent = `Chart shows impact probability ranging from ${minProb}% to ${maxProb}%, with the highest probability recorded on ${formattedMaxDate} and the lowest on ${formattedMinDate}.`;
+        }
+    </script>
+</body>
+</html>
