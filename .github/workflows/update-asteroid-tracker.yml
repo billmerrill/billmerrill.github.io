@@ -43,7 +43,7 @@ jobs:
                 <!-- rowslug -->"
           
           # Replace the line containing the rowslug comment with our new row
-          sed -i'.sedbak' "/<!-- rowslug -->/c\\${NEW_ROW}" index.html
+          sed -i'.sedbak' "/<\!-- rowslug -->/c\\${NEW_ROW}" index.html
       
       - name: Check for changes
         id: check-changes
