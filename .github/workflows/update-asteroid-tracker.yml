@@ -31,7 +31,14 @@ jobs:
           probability=$(curl -s "https://ssd-api.jpl.nasa.gov/sentry.api?des=2024%20YR4" | jq '.summary.ip | tonumber * 100000 | round / 1000')
           echo "probability=$probability" >> $GITHUB_OUTPUT
           echo "Fetched probability: $probability%"
-      
+     
+      - name: Probability note
+        id: probability-note
+        run: |
+          pnote=$(yar_prob.py ${{ steps.fetch-probability.outputs.probability }})
+          echo "probability_note=$pnote" >> $GITHUB_OUTPUT
+          echo "Computed note: $probability_note"
+
       - name: Update HTML file
         run: |
           # Create a temporary file with our new row
@@ -39,6 +46,7 @@ jobs:
                 <tr>
                     <td>${{ steps.date.outputs.today }}</td>
                     <td>${{ steps.fetch-probability.outputs.probability }}</td>
+                    <td>${{ steps.date.outputs.probability_note }}</td>
                     <td></td>
                 </tr>
                 <!-- rowslug -->
