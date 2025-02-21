@@ -34,16 +34,27 @@ jobs:
       
       - name: Update HTML file
         run: |
-          # Create new table row
-          NEW_ROW="<tr>
+          # Create a temporary file with our new row
+          cat > new_row.txt << EOF
+                <tr>
                     <td>${{ steps.date.outputs.today }}</td>
                     <td>${{ steps.fetch-probability.outputs.probability }}</td>
                     <td></td>
                 </tr>
-                <\!-- rowslug -->"
+                <!-- rowslug -->
+EOF
           
-          # Replace the line containing the rowslug comment with our new row
-          sed -i'.sedbak' "s/<\!-- rowslug -->/c\\${NEW_ROW}" index.html
+          # Use awk for safer multi-line replacement
+          awk '{
+            if ($0 ~ /<!-- rowslug -->/) {
+              system("cat new_row.txt");
+            } else {
+              print $0;
+            }
+          }' index.html > index.html.new
+          
+          # Replace the original file
+          mv index.html.new index.html
       
       - name: Check for changes
         id: check-changes
