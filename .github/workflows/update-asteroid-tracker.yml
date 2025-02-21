@@ -3,7 +3,7 @@ name: Update Asteroid Impact Tracker
 on:
   # Run on schedule (daily at midnight UTC)
   schedule:
-    - cron: '0 0 * * *'
+    - cron: '2 14 * * *'
   
   # Allow manual triggering
   workflow_dispatch:
