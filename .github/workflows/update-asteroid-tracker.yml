@@ -35,7 +35,7 @@ jobs:
       - name: Update HTML file
         run: |
           # Create new table row
-          NEW_ROW="                <tr>
+          NEW_ROW="<tr>
                     <td>${{ steps.date.outputs.today }}</td>
                     <td>${{ steps.fetch-probability.outputs.probability }}</td>
                     <td></td>
@@ -43,7 +43,7 @@ jobs:
                 <\!-- rowslug -->"
           
           # Replace the line containing the rowslug comment with our new row
-          sed -i'.sedbak' "/<\!-- rowslug -->/c\\${NEW_ROW}" index.html
+          sed -i'.sedbak' "s/<\!-- rowslug -->/c\\${NEW_ROW}" index.html
       
       - name: Check for changes
         id: check-changes
