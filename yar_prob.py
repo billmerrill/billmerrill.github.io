@@ -11,6 +11,8 @@ coin_prob = .5
 while coin_prob > prob:
     flip += 1
     coin_prob *= .5
+    if flip > 100:
+        break
 
 disp_prob = str(round(coin_prob * 100, 3))
 

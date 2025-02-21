@@ -35,7 +35,7 @@ jobs:
       - name: Probability note
         id: probability-note
         run: |
-          pnote=$(yar_prob.py ${{ steps.fetch-probability.outputs.probability }})
+          pnote=$(./yar_prob.py ${{ steps.fetch-probability.outputs.probability }})
           echo "probability_note=$pnote" >> $GITHUB_OUTPUT
           echo "Computed note: $probability_note"
 
