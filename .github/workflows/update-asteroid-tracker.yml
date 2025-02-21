@@ -46,8 +46,7 @@ jobs:
                 <tr>
                     <td>${{ steps.date.outputs.today }}</td>
                     <td>${{ steps.fetch-probability.outputs.probability }}</td>
-                    <td>${{ steps.date.outputs.probability_note }}</td>
-                    <td></td>
+                    <td>${{ steps.probability-note.outputs.probability_note }}</td>
                 </tr>
                 <!-- rowslug -->
           EOL
