@@ -51,15 +51,15 @@ jobs:
               next;
             } 
             print $0;
-          }' index.html > index.html.new
+          }' yar_impact.html > yar_impact.html.new
           
           # Replace the original file
-          mv index.html.new index.html
+          mv yar_impact.html.new yar_impact.html
       
       - name: Check for changes
         id: check-changes
         run: |
-          if git diff --quiet index.html; then
+          if git diff --quiet yar_impact.html; then
             echo "No changes detected"
             echo "changes_made=false" >> $GITHUB_OUTPUT
           else
@@ -72,7 +72,7 @@ jobs:
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git add index.html
+          git add yar_impact.html
           git commit -m "Update asteroid impact probability data for ${{ steps.date.outputs.today }}"
       
       - name: Push changes
