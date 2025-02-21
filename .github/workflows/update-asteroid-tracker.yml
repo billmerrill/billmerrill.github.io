@@ -40,7 +40,7 @@ jobs:
                     <td>${{ steps.fetch-probability.outputs.probability }}</td>
                     <td></td>
                 </tr>
-                <!-- rowslug -->"
+                <\!-- rowslug -->"
           
           # Replace the line containing the rowslug comment with our new row
           sed -i'.sedbak' "/<\!-- rowslug -->/c\\${NEW_ROW}" index.html
