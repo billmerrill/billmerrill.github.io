@@ -35,22 +35,22 @@ jobs:
       - name: Update HTML file
         run: |
           # Create a temporary file with our new row
-          cat > new_row.txt << EOF
+          cat > new_row.txt << 'EOL'
                 <tr>
                     <td>${{ steps.date.outputs.today }}</td>
                     <td>${{ steps.fetch-probability.outputs.probability }}</td>
                     <td></td>
                 </tr>
                 <!-- rowslug -->
-EOF
+          EOL
           
           # Use awk for safer multi-line replacement
           awk '{
             if ($0 ~ /<!-- rowslug -->/) {
               system("cat new_row.txt");
-            } else {
-              print $0;
-            }
+              next;
+            } 
+            print $0;
           }' index.html > index.html.new
           
           # Replace the original file
