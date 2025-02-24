@@ -237,7 +237,8 @@
             
             // Add 20% buffer below and above
             const result = {
-                min: Math.max(0, min - (range * 0.2)),
+                // min: Math.max(0, min - (range * 0.2)),             
+                min: min - (range * 0.2),
                 max: max + (range * 0.2)
             };
             
