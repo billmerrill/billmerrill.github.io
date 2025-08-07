@@ -160,6 +160,10 @@ li {
     margin-left: 3rem;
 }
 
+dd {
+    margin-bottom: 1lh;
+}
+
 #text-binder {
     max-width: 40rem;
 }
