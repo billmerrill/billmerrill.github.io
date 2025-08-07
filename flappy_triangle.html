@@ -27,12 +27,38 @@
       flex-wrap: wrap;
     }
 
+    #why {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 20px;
+    }
+
+    #why div {
+      width: 30rem;
+    }
+
   </style>
 </head>
 <body>
   <h1>Flappy Triangles</h1>
-  <a href="https://social.lol/@billmerrill/113914179969698499">why?</a>
   <canvas id="myCanvas" width="400" height="300"></canvas>
+  <section id="why">
+    <div>
+      <p>
+    <a href="https://social.lol/@billmerrill/113914179969698499">Why?</a><br>
+      </p>
+      <p>
+    Should this find another triange, it will save a snapshot. You could leave this running in the background to discover new triangles.
+    You can also click on the animation to capture your favorite non-trianges.
+      </p>
+      <p>
+    <a href="https://github.com/billmerrill/triangles/blob/main/flappy_triangle.py">I wrote this in matplotlib first</a> and used spicy autocomplete to translate it to canvas.
+    It did ok, but completely fouled the animation loop, it was easy enough to fix.
+      </p>
+    </div>
+  </section>
   <h2>I'm Searching...</h2>
   <div id="found"></div>
   <script>
